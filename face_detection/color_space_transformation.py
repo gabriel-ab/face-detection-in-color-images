@@ -72,7 +72,7 @@ class CR(ChromaNonLinearTransformation):
 
     @classmethod
     def bright_center(cls, y: float) -> float:
-        return 154 + (y - cls.kh) * (154 - 132) / (cls.ymax - cls.kh)
+        return 154 - (y - cls.kh) * (154 - 132) / (cls.ymax - cls.kh)
 
 
 class CB(ChromaNonLinearTransformation):
