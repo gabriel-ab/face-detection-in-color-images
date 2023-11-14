@@ -19,6 +19,6 @@ def light_compensation(image: np.ndarray, ycc: np.ndarray | None = None):
     reference_white = image[reference_white_pixels].mean(axis=0)
 
     # Escalona cada canal de cor para que o branco de referência (top 5%) seja (255, 255, 255)
-    lux_corrected_image = (image * (scale + (scale - reference_white))).clip(0, scale)
-    
+    lux_corrected_image = (image * (scale + (scale - reference_white))).clip(0, scale).astype(image.dtype)
+
     return lux_corrected_image
