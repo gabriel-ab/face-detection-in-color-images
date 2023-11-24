@@ -11,12 +11,12 @@ from face_detection.color_space_transformation import color_space_transformation
 image_path = Path(__file__).parent / 'reference.png'
 print(image_path)
 
+point = np.array(([150], [110]))
 def skin_color_detection(ycc):
-    cr = ycc[..., 1]
-    cb = ycc[..., 2]
-    cr_selection = (130 < cr) & (cr < 155)
-    cb_selection = (80 < cb) & (cb < 140)
-    return cr_selection | cb_selection
+    crcb_points = ycc[..., 1:3].transpose(2, 0, 1).reshape(2, -1)
+    result = np.linalg.norm(point - crcb_points, axis=0) > 40
+    result = result.reshape(*ycc.shape[:2])
+    return result
 
 
 image = plt.imread(image_path)
