@@ -89,7 +89,8 @@ class CB(ChromaNonLinearTransformation):
         return 108 + (y - cls.kh) * (118 - 108) / (cls.ymax - cls.kh)
 
 
-def color_space_transformation(ycc: np.ndarray):
+def color_space_transformation(image: np.ndarray):
+    ycc = cv.cvtColor(image, cv.COLOR_RGB2YCR_CB)
     if ycc.mean() < 1:
         ycc = (ycc * 255).astype(np.uint8)
 
@@ -99,4 +100,4 @@ def color_space_transformation(ycc: np.ndarray):
             ycc[i, j, 1] = CR.transform(y, cr)
             ycc[i, j, 2] = CB.transform(y, cb)
 
-    return ycc
+    return cv.cvtColor(ycc, cv.COLOR_YCR_CB2RGB)

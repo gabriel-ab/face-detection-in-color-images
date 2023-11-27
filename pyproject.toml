@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "face_detection"
+version = "1.0.0"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+# face_detection = "face_detection.cli:cli"
+
+[project.optional-dependencies]
+
+# option = [deps]
+[tool.setuptools.packages.find]
+include = ["face_detection"] 
