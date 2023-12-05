@@ -23,7 +23,6 @@ def pipeline(image: np.ndarray):
     yield image
 
 
-
 image = plt.imread(image_path)
 images = tuple(pipeline(image))
 plt.figure(figsize=(14,6), facecolor='black')

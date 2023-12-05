@@ -101,3 +101,20 @@ def color_space_transformation(image: np.ndarray):
             ycc[i, j, 2] = CB.transform(y, cb)
 
     return cv.cvtColor(ycc, cv.COLOR_YCR_CB2RGB)
+
+def transform(ycc: np.ndarray):
+    isfloat = ycc.dtype in (np.float32, np.float64)
+
+    if isfloat:
+        res = (ycc * 255).astype(np.uint8)
+    else:
+        res = ycc.copy()
+
+    for i, line in enumerate(res):
+        for j, (y, cr, cb) in enumerate(line):
+            res[i, j, 1] = CR.transform(y, cr)
+            res[i, j, 2] = CB.transform(y, cb)
+
+    if isfloat:
+        return res.astype(ycc.dtype)
+    return res
