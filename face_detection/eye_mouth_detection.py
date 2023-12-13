@@ -1,3 +1,5 @@
+import itertools
+import math
 import cv2 as cv
 import numpy as np
 import dataclasses as dc
@@ -9,12 +11,29 @@ kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, (12,12))
 
 @dc.dataclass
 class EyesMouth:
-    eyes: tuple[cv.KeyPoint, cv.KeyPoint]
+    left_eye: cv.KeyPoint
+    right_eye: cv.KeyPoint
     mouth: cv.KeyPoint
+
+    def center(self) -> tuple[int, int]:
+        xy = np.mean([
+            self.left_eye.pt,
+            self.right_eye.pt,
+            self.mouth.pt,
+        ], axis=0)
+        return xy
+
     def draw(self, image: np.ndarray):
-        cv.circle(image, tuple(map(int, self.eyes[0].pt)), int(self.eyes[0].size), (0, 255, 0), 5)
-        cv.circle(image, tuple(map(int, self.eyes[1].pt)), int(self.eyes[1].size), (0, 255, 0), 5)
-        cv.circle(image, tuple(map(int, self.mouth.pt)), int(self.mouth.size), (0, 0, 255), 5)
+        left_eye = np.array(self.left_eye.pt).astype(int)
+        right_eye = np.array(self.right_eye.pt).astype(int)
+        mouth = np.array(self.mouth.pt).astype(int)
+        forehead = np.mean([left_eye, right_eye], axis=0)
+        angle = math.atan2( forehead[1] - mouth[1], forehead[0] - mouth[0] ) * ( 180 / math.pi )
+        cv.line(image, left_eye, right_eye, (255,255,255), 2)
+        cv.line(image, right_eye, mouth, (255,255,255), 2)
+        cv.line(image, mouth, left_eye, (255,255,255), 2)
+        cv.ellipse(image, self.center().astype(int), (180,120), angle, 0, 360, (0,255,0), 2)
+
 
 def minmax_scale(data):
     min_val = np.min(data)
@@ -55,6 +74,7 @@ def mouth_map(ycbcr):
 
 def simplify(gray):
     gray = np.uint8(gray * 255)
+    # cv.GaussianBlur(gray, (5,5), 1, gray)
     gray = cv.pyrDown(gray)
     gray = cv.pyrDown(gray)
     gray = cv.pyrUp(gray)
@@ -62,8 +82,36 @@ def simplify(gray):
     cv.threshold(gray, 127, 255, cv.THRESH_BINARY, gray)
     return gray
 
+def filter_detections(image: np.ndarray, eyes: tuple[cv.KeyPoint, ...], mouth: tuple[cv.KeyPoint, ...]) -> list[EyesMouth]:
+    height, width = image.shape[:2]
 
-def detect(image):
+    def is_good_eye_combination(left_eye: cv.KeyPoint, right_eye: cv.KeyPoint) -> bool:
+        # is ordered? (is left on left? and right on right?)
+        is_ordered = left_eye.pt[0] < right_eye.pt[0]
+
+        # is horizontaly aligned? (tolerance: 10% of the image height)
+        is_horizontaly_aligned = (abs(left_eye.pt[1] - right_eye.pt[1]) / height) < 0.1
+
+        return is_ordered and is_horizontaly_aligned
+
+    def is_good_eye_mouth_combination(left_eye: cv.KeyPoint, right_eye: cv.KeyPoint, mouth: cv.KeyPoint) -> bool:
+        eye_to_eye_distance = math.dist(left_eye.pt, right_eye.pt)
+        eye_to_mouth_distance = (math.dist(left_eye.pt, mouth.pt) + math.dist(right_eye.pt, mouth.pt)) / 2
+        ratio = eye_to_mouth_distance / eye_to_eye_distance
+
+        # the distance of eye to mouth must be equal to or, at maximum, twice as big as eye to eye
+        return 1 < ratio < 2
+
+    good_eyes_candidates = [eyes for eyes in itertools.combinations(eyes, 2) if is_good_eye_combination(*eyes)]
+
+    return [
+        EyesMouth(l, r, m)
+        for (l, r), m in itertools.product(good_eyes_candidates, mouth)
+        if is_good_eye_mouth_combination(l, r, m)
+    ]
+
+
+def detect(image: np.ndarray) -> list[EyesMouth]:
     ycc = cv.cvtColor(image, cv.COLOR_RGB2YCR_CB)
     ycc = minmax_scale(ycc.astype(np.float32))
 
@@ -74,8 +122,8 @@ def detect(image):
     mouth = cv.dilate(np.float32(mouth > 0.3), kernel, iterations=2)
     mouth = simplify(mouth)
 
-    eyes = detector.detect(~eyes) + (None,None)
-    mouth = detector.detect(~mouth) + (None,)
-    return EyesMouth(eyes[:2], mouth[0])
+    eyes = detector.detect(~eyes)
+    mouth = detector.detect(~mouth)
 
+    return filter_detections(image, eyes, mouth)
 
