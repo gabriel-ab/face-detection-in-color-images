@@ -2,7 +2,7 @@
 
 from matplotlib import pyplot as plt
 from pathlib import Path
-from face_detection.light_compensation import compensate_light
+from face_detection.process.light import compensate_light
 
 image_path = Path(__file__).parent / 'reference.png'
 

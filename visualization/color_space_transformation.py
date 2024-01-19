@@ -2,7 +2,7 @@
 
 from matplotlib import pyplot as plt
 from pathlib import Path
-from face_detection.color_space_transformation import CB, CR, ChromaNonLinearTransformation
+from face_detection.process.color_space import CB, CR, ChromaNonLinearTransformation
 
 image_path = Path(__file__).parent / 'reference.png'
 

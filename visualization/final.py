@@ -1,14 +1,16 @@
-from face_detection import (
-    eye_mouth_detection, color_space_transformation,
-    light_compensation, skin_color_detection
+from face_detection.detect import (
+    eye_mouth
 )
 import cv2 as cv
 import numpy as np
 
+from face_detection.process import color_space, light
+from face_detection.segment import skin_color
+
 def process(image: np.ndarray):
-    image = light_compensation.compensate_light(image)
-    image = color_space_transformation.color_space_transformation(image)
-    skin_color_detection.ycbcr_skin_detection()
+    image = light.compensate_light(image)
+    image = color_space.color_space_transformation(image)
+    skin_color.ycbcr_skin_detection()
 
 
 

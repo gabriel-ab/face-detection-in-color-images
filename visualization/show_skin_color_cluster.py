@@ -7,8 +7,8 @@ import cv2 as cv
 import numpy as np
 from skimage.color import rgb2ycbcr
 
-from face_detection.light_compensation import compensate_light
-from face_detection.color_space_transformation import color_space_transformation, CR, CB
+from face_detection.process.light import compensate_light
+from face_detection.process.color_space import color_space_transformation, CR, CB
 
 
 transform_cr = np.vectorize(CR.transform)

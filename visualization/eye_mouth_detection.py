@@ -1,4 +1,4 @@
-from face_detection import eye_mouth_detection as module
+from face_detection.detect import eye_mouth as module
 import cv2 as cv
 import numpy as np
 
