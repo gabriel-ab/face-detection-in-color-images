@@ -21,6 +21,7 @@ if 1:
     segmented = cv.bitwise_and(compensated, compensated, mask=skin_mask)
     keypoints = detect_skin(skin_mask)
     canvas = cv.drawKeypoints(skin_mask, keypoints, None, (255,0,0))
+    print(keypoints)
 
     
     cv.imshow('raw', raw)
