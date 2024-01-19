@@ -5,7 +5,7 @@ from matplotlib import widgets as wid
 from pathlib import Path
 import cv2 as cv
 import numpy as np
-from face_detection.light_compensation import light_compensation
+from face_detection.light_compensation import compensate_light
 from face_detection.color_space_transformation import color_space_transformation
 from face_detection.skin_color_detection import ycbcr_skin_detection
 
@@ -14,7 +14,7 @@ image_path = Path(__file__).parent / 'reference.png'
 
 def pipeline(image: np.ndarray):
     yield image
-    image = light_compensation(image)
+    image = compensate_light(image)
     # yield image
     # image = color_space_transformation(image)
     yield image

@@ -111,12 +111,11 @@ def filter_detections(image: np.ndarray, eyes: tuple[cv.KeyPoint, ...], mouth: t
     ]
 
 
-def detect(image: np.ndarray) -> list[EyesMouth]:
-    ycc = cv.cvtColor(image, cv.COLOR_RGB2YCR_CB)
-    ycc = minmax_scale(ycc.astype(np.float32))
+def detect(ycbcr_image: np.ndarray) -> list[EyesMouth]:
+    ycbcr_image = minmax_scale(ycbcr_image.astype(np.float32))
 
-    eyes = eye_map(ycc)
-    mouth = mouth_map(ycc)
+    eyes = eye_map(ycbcr_image)
+    mouth = mouth_map(ycbcr_image)
 
     eyes = simplify(eyes)
     mouth = cv.dilate(np.float32(mouth > 0.3), kernel, iterations=2)

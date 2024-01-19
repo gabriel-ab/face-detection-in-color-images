@@ -2,7 +2,7 @@ import cv2 as cv
 import numpy as np
 
 
-def light_compensation(image: np.ndarray, ycc: np.ndarray | None = None):
+def compensate_light(image: np.ndarray, ycc: np.ndarray | None = None):
     if ycc is None:
         ycc = cv.cvtColor(image, cv.COLOR_RGB2YCR_CB)
 

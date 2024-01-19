@@ -20,10 +20,10 @@ hsv_lower = np.array([0, 48, 80], dtype=np.uint8)
 hsv_upper = np.array([20, 255, 255], dtype=np.uint8)
 hsv_kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, (5, 5))
 
-def hsv_skin_detection(image: np.ndarray):
-    converted = cv.cvtColor(image, cv.COLOR_RGB2HSV)
-    skin_mask = cv.inRange(converted, hsv_lower, hsv_upper)
+def segment_skin(hsv_image: np.ndarray):
+    skin_mask = cv.inRange(hsv_image, hsv_lower, hsv_upper)
     skin_mask = cv.morphologyEx(skin_mask, cv.MORPH_OPEN, hsv_kernel, iterations=2)
-    # skin_mask = cv.erode(skin_mask, kernel, iterations = 2)
-    # skin_mask = cv.dilate(skin_mask, kernel, iterations = 2)
+    skin_mask = cv.erode(skin_mask, hsv_kernel, iterations = 2)
+    skin_mask = cv.dilate(skin_mask, hsv_kernel, iterations = 2)
     skin_mask = cv.GaussianBlur(skin_mask, (3, 3), 0)
+    return skin_mask
