@@ -5,12 +5,12 @@ import cv2 as cv
 import numpy as np
 
 from face_detection.process import color_space, light
-from face_detection.segment import skin_color
+from face_detection.segment import skin
 
 def process(image: np.ndarray):
     image = light.compensate_light(image)
     image = color_space.color_space_transformation(image)
-    skin_color.ycbcr_skin_detection()
+    skin.ycbcr_skin_detection()
 
 
 

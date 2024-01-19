@@ -18,12 +18,12 @@ def ycbcr_skin_detection(image):
 
 hsv_lower = np.array([0, 48, 80], dtype=np.uint8)
 hsv_upper = np.array([20, 255, 255], dtype=np.uint8)
-hsv_kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, (5, 5))
+hsv_kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, (9, 13))
 
 def segment_skin(hsv_image: np.ndarray):
     skin_mask = cv.inRange(hsv_image, hsv_lower, hsv_upper)
-    skin_mask = cv.morphologyEx(skin_mask, cv.MORPH_OPEN, hsv_kernel, iterations=2)
-    skin_mask = cv.erode(skin_mask, hsv_kernel, iterations = 2)
-    skin_mask = cv.dilate(skin_mask, hsv_kernel, iterations = 2)
+    skin_mask = cv.morphologyEx(skin_mask, cv.MORPH_CLOSE, hsv_kernel, iterations=5)
+    # skin_mask = cv.dilate(skin_mask, hsv_kernel, iterations = 4)
+    # skin_mask = cv.erode(skin_mask, hsv_kernel, iterations = 2)
     skin_mask = cv.GaussianBlur(skin_mask, (3, 3), 0)
     return skin_mask
