@@ -112,7 +112,8 @@ def filter_detections(image: np.ndarray, eyes: tuple[cv.KeyPoint, ...], mouth: t
 
 
 def detect(ycbcr_image: np.ndarray) -> list[EyesMouth]:
-    ycbcr_image = minmax_scale(ycbcr_image.astype(np.float32))
+    if ycbcr_image.dtype == np.uint8:
+        ycbcr_image = ycbcr_image.astype(np.float32) / 255
 
     eyes = eye_map(ycbcr_image)
     mouth = mouth_map(ycbcr_image)

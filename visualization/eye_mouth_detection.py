@@ -4,6 +4,7 @@ import numpy as np
 
 if __name__ == '__main__':
     image = cv.imread('visualization/face.png')
+    image = cv.cvtColor(image, cv.COLOR_BGR2YCR_CB) / 255
     for face in module.detect(image):
         face.draw(image)
     cv.imshow('Final Detection', image)
