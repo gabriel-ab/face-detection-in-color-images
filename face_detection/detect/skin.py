@@ -1,7 +1,7 @@
-from typing import Sequence
+from typing import Sequence, NamedTuple
 import cv2 as cv
 import numpy as np
-import dataclasses as dc
+
 
 def load():
     params = cv.SimpleBlobDetector.Params()
@@ -10,13 +10,11 @@ def load():
 
 detector = load()
 
-@dc.dataclass(slots=True)
-class Rect:
+class Rect(NamedTuple):
     left: int
     top: int
     width: int
     height: int
-    centroid: tuple[float, float]
 
 
 def detect(skin_mask: np.ndarray):
@@ -38,7 +36,6 @@ def detect(skin_mask: np.ndarray):
                 top = int(stats[i, cv.CC_STAT_TOP]),
                 width = int(stats[i, cv.CC_STAT_WIDTH]),
                 height = int(stats[i, cv.CC_STAT_HEIGHT]),
-                centroid = tuple(centroids[i, :]),
             )
 
     # Get the coordinates of the largest component

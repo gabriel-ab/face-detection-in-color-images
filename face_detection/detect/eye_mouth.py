@@ -124,5 +124,5 @@ def detect(ycbcr_image: np.ndarray) -> list[EyesMouth]:
     eyes = detector.detect(~eyes)
     mouth = detector.detect(~mouth)
 
-    return filter_detections(image, eyes, mouth)
+    return filter_detections(ycbcr_image, eyes, mouth)
 
