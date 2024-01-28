@@ -10,7 +10,7 @@ image_path = Path(__file__).parent / 'reference.png'
 test_range = list(range(Y_MIN, Y_MAX))
 
 def apply_cb(y_values, cb_value):
-    return [transform_cr(y, cb_value) for y in y_values]
+    return [transform_cb(y, cb_value) for y in y_values]
 
 def apply_cr(y_values, cr_value):
     return [transform_cr(y, cr_value) for y in y_values]

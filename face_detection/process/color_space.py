@@ -12,10 +12,13 @@ Y_MAX = 235
 def transform_cb(
     y: float,
     c: float,
-    w: float = 46.97,
-    wl: float = 23,
-    wh: float = 14,
 ) -> float:
+
+    w = 46.97
+    wl = 23
+    wh = 14
+    threshold = 108 # center(KH) -> 108 + (KH - KH) * (118 - 108) / (Y_MAX - KH) -> 108
+
     if y < KL:
         y_center = 108 + (KL - y) * (118 - 108) / (KL - Y_MIN)
         y_cluster = wl + (y - Y_MIN) * (w - wl) / (KL - Y_MIN)
@@ -25,7 +28,6 @@ def transform_cb(
         y_center = 108 + (y - KH) * (118 - 108) / (Y_MAX - KH)
         y_cluster = wh + (Y_MAX - y) * (w - wh) / (Y_MAX - KH)
 
-    threshold = wh + (Y_MAX - KH) * (w - wh) / (Y_MAX - KH)
     return (c - y_center) * w / y_cluster + threshold
 
 
@@ -33,20 +35,22 @@ def transform_cb(
 def transform_cr(
     y: float,
     c: float,
-    w: float = 38.76,
-    wl: float = 20,
-    wh: float = 10
 ) -> float:
+
+    w = 38.76
+    wl = 20
+    wh = 10
+    threshold = 154 # center(KH) -> 154 - (KH - KH) * (154 - 132) / (Y_MAX - KH) -> 154
+
     if y < KL:
         y_center = 154 - (KL - y) * (154 - 144) / (KL - Y_MIN)
-        y_cluster = wl + (w - Y_MIN) * (w - wl) / (KL - Y_MIN)
+        y_cluster = wl + (y - Y_MIN) * (w - wl) / (KL - Y_MIN)
     elif y < KH:
         return c
     else:
         y_center = 154 - (y - KH) * (154 - 132) / (Y_MAX - KH)
         y_cluster = wh + (Y_MAX - y) * (w - wh) / (Y_MAX - KH)
 
-    threshold = wh + (Y_MAX - KH) * (w - wh) / (Y_MAX - KH)
     return (c - y_center) * w / y_cluster + threshold
 
 
