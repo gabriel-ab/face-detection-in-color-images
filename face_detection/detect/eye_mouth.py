@@ -79,7 +79,6 @@ def mouth_map(ycbcr):
 
 def simplify(gray):
     gray = np.uint8(gray * 255)
-    # cv.GaussianBlur(gray, (5,5), 1, gray)
     gray = cv.pyrDown(gray)
     gray = cv.pyrDown(gray)
     gray = cv.pyrUp(gray)
@@ -117,16 +116,12 @@ def filter_detections(image: np.ndarray, eyes: tuple[cv.KeyPoint, ...], mouth: t
 
 
 def simplify_eye_map(eyes: np.ndarray) -> np.ndarray:
-  cv.blur(eyes, (5,5), eyes)
-  cv.threshold(eyes, 80, 255, None, eyes)
-  return np.uint8(eyes*255)
+    return simplify(eyes)
 
 
 def simplify_mouth_map(mouth: np.ndarray) -> np.ndarray:
-  cv.blur(mouth, (5,5), mouth)
-  cv.threshold(mouth, 60, 255, None, mouth)
-  cv.dilate(mouth, kernel, mouth)
-  return np.uint8(mouth*255)
+    mouth = cv.dilate(np.float32(mouth > 0.3), kernel, iterations=2)
+    return simplify(mouth)
 
 
 def detect(ycbcr_image: np.ndarray) -> list[EyesMouth]:
@@ -136,12 +131,11 @@ def detect(ycbcr_image: np.ndarray) -> list[EyesMouth]:
     eyes = eye_map(ycbcr_image)
     mouth = mouth_map(ycbcr_image)
 
-    eyes = simplify(eyes)
-    mouth = cv.dilate(np.float32(mouth > 0.3), kernel, iterations=2)
-    mouth = simplify(mouth)
+    eyes = simplify_eye_map(eyes)
+    mouth = simplify_mouth_map(mouth)
 
-    eyes = detector.detect(~eyes)
-    mouth = detector.detect(~mouth)
+    eyes = detector.detect(eyes)
+    mouth = detector.detect(mouth)
 
     return filter_detections(ycbcr_image, eyes, mouth)
 

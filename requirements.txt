@@ -1,0 +1,28 @@
+asttokens @ file:///home/conda/feedstock_root/build_artifacts/asttokens_1694046349000/work
+backcall @ file:///home/conda/feedstock_root/build_artifacts/backcall_1592338393461/work
+backports.functools-lru-cache @ file:///home/conda/feedstock_root/build_artifacts/backports.functools_lru_cache_1687772187254/work
+certifi==2023.11.17
+charset-normalizer==3.3.2
+comm @ file:///home/conda/feedstock_root/build_artifacts/comm_1691044910542/work
+contourpy==1.1.1
+cycler==0.12.1
+debugpy @ file:///croot/debugpy_1690905042057/work
+decorator @ file:///home/conda/feedstock_root/build_artifacts/decorator_1641555617451/work
+exceptiongroup @ file:///home/conda/feedstock_root/build_artifacts/exceptiongroup_1692026125334/work
+executing @ file:///home/conda/feedstock_root/build_artifacts/executing_1667317341051/work
+fonttools==4.43.1
+idna==3.6
+imageio==2.31.5
+importlib-metadata @ file:///home/conda/feedstock_root/build_artifacts/importlib-metadata_1688754491823/work
+ipykernel @ file:///home/conda/feedstock_root/build_artifacts/ipykernel_1693880262622/work
+ipympl==0.9.3
+ipython @ file:///home/conda/feedstock_root/build_artifacts/ipython_1696264049390/work
+ipython-genutils==0.2.0
+opencv-contrib-python==4.8.1.78
+matplotlib==3.8.0
+numpy==1.26.1
+ipywidgets==8.1.1
+numba==0.58.1
+requests==2.31.0
+scikit-image==0.22.0
+scipy==1.11.3

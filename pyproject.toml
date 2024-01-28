@@ -6,10 +6,9 @@ build-backend = "setuptools.build_meta"
 name = "face_detection"
 version = "1.0.0"
 requires-python = ">=3.10"
-dependencies = []
 
 [project.scripts]
-# face_detection = "face_detection.cli:cli"
+# face_detection = "face_detection.__main__"
 
 [project.optional-dependencies]
 

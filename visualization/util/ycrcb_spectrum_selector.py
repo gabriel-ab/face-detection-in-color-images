@@ -3,6 +3,8 @@ import cv2 as cv
 import numpy as np
 
 camera = cv.VideoCapture(0)
+camera.set(cv.CAP_PROP_AUTO_WB, 0)
+camera.set(cv.CAP_PROP_AUTO_EXPOSURE, 0)
 QUIT_KEY = ord('q')
 
 def stream(camera: cv.VideoCapture):

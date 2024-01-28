@@ -27,8 +27,7 @@ def imshow_rgb(name: str, rgb: np.ndarray):
 
 
 # if 1:
-#     raw = cv.imread('temp/example.png')
-#     raw = cv.imread('visualization/face.png')
+    # bgr = cv.imread('visualization/face.png')
 for bgr in cvstream('compensated_rgb'):
     rgb = cv.cvtColor(bgr, cv.COLOR_BGR2RGB)
     compensated_rgb = compensate_light(rgb)
@@ -59,11 +58,13 @@ for bgr in cvstream('compensated_rgb'):
     for face in faces:
         face.draw(face_rgb)
 
-    canva_skin_detection_drawn = cv.rectangle(rgb.copy(), skin_rect, (0,255,0), 2)
     imshow_rgb('compensated_rgb', compensated_rgb)
     imshow_rgb('skin_mask', np.uint8(skin_mask * 255))
-    imshow_rgb('skin_detection', canva_skin_detection_drawn)
+    imshow_rgb('eye_mouth_blobs', np.stack([eyes, mouth, np.zeros_like(eyes)], axis=-1))
+    imshow_rgb('skin_rect', cv.rectangle(rgb.copy(), skin_rect, (0,255,0), 2))
     imshow_rgb('face_detection', face_rgb)
 
+    if faces:
+        print(faces)
     # cv.waitKey()
 

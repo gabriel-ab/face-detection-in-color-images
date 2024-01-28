@@ -1,6 +1,0 @@
-ymin = 0.0
-ymax = 255.0
-crmin = 126.0
-crmax = 180.0
-cbmin = 98.0
-cbmax = 152.0
