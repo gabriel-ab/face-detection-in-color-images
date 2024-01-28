@@ -8,18 +8,12 @@ import numpy as np
 from skimage.color import rgb2ycbcr
 
 from face_detection.process.light import compensate_light
-from face_detection.process.color_space import color_space_transformation, CR, CB
+from face_detection.process.color_space import transform_cr, transform_cb
+
+transform_cb = np.vectorize(transform_cb)
+transform_cr = np.vectorize(transform_cr)
 
 
-transform_cr = np.vectorize(CR.transform)
-transform_cb = np.vectorize(CB.transform)
-
-def pipeline(image: np.ndarray):
-    yield image
-    image = compensate_light(image)
-    yield image
-    image = color_space_transformation(image)
-    yield image
 
 rgb = np.mgrid[:10, :10, :10] / 9
 rgb = rgb.transpose(1,2,3,0).astype(np.float32)

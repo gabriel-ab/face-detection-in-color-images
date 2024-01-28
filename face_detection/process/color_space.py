@@ -8,7 +8,7 @@ KH = 188
 Y_MIN = 16
 Y_MAX = 235
 
-@nb.jit
+@nb.jit(nopython=True)
 def transform_cb(
     y: float,
     c: float,
@@ -17,19 +17,19 @@ def transform_cb(
     wh: float = 14,
 ) -> float:
     if y < KL:
-        y_center = 108 - (KL - y) * (118 - 108) / (KL - Y_MIN)
-        y_cluster = wl + (w - Y_MIN) * (w - wl) / (KL - Y_MIN)
+        y_center = 108 + (KL - y) * (118 - 108) / (KL - Y_MIN)
+        y_cluster = wl + (y - Y_MIN) * (w - wl) / (KL - Y_MIN)
     elif y < KH:
         return c
     else:
-        y_center = 108 - (y - KH) * (118 - 108) / (Y_MAX - KH)
+        y_center = 108 + (y - KH) * (118 - 108) / (Y_MAX - KH)
         y_cluster = wh + (Y_MAX - y) * (w - wh) / (Y_MAX - KH)
 
     threshold = wh + (Y_MAX - KH) * (w - wh) / (Y_MAX - KH)
     return (c - y_center) * w / y_cluster + threshold
 
 
-@nb.jit
+@nb.jit(nopython=True)
 def transform_cr(
     y: float,
     c: float,
