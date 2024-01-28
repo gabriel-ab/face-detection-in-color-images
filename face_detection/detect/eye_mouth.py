@@ -4,8 +4,13 @@ import cv2 as cv
 import numpy as np
 import dataclasses as dc
 
+def load():
+    params = cv.SimpleBlobDetector.Params()
+    params.blobColor = 255
+    return cv.SimpleBlobDetector.create(params)
 
-detector = cv.SimpleBlobDetector.create()
+
+detector = load()
 kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, (12,12))
 
 
@@ -109,6 +114,19 @@ def filter_detections(image: np.ndarray, eyes: tuple[cv.KeyPoint, ...], mouth: t
         for (l, r), m in itertools.product(good_eyes_candidates, mouth)
         if is_good_eye_mouth_combination(l, r, m)
     ]
+
+
+def simplify_eye_map(eyes: np.ndarray) -> np.ndarray:
+  cv.blur(eyes, (5,5), eyes)
+  cv.threshold(eyes, 80, 255, None, eyes)
+  return np.uint8(eyes*255)
+
+
+def simplify_mouth_map(mouth: np.ndarray) -> np.ndarray:
+  cv.blur(mouth, (5,5), mouth)
+  cv.threshold(mouth, 60, 255, None, mouth)
+  cv.dilate(mouth, kernel, mouth)
+  return np.uint8(mouth*255)
 
 
 def detect(ycbcr_image: np.ndarray) -> list[EyesMouth]:

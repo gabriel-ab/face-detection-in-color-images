@@ -7,7 +7,7 @@ import cv2 as cv
 import numpy as np
 from face_detection.process.light import compensate_light
 from face_detection.process.color_space import color_space_transformation
-from face_detection.segment.skin import ycbcr_skin_detection
+from face_detection.segment.skin import ycbcr_segment_skin
 
 image_path = Path(__file__).parent / 'reference.png'
 
@@ -18,7 +18,7 @@ def pipeline(image: np.ndarray):
     # yield image
     # image = color_space_transformation(image)
     yield image
-    image = ycbcr_skin_detection(image)
+    image = ycbcr_segment_skin(image)
     yield image
 
 

@@ -54,19 +54,11 @@ def transform_cr(
     return (c - y_center) * w / y_cluster + threshold
 
 
+@nb.jit(nopython=True)
 def transform(ycbcr: np.ndarray):
-    isfloat = ycbcr.dtype in (np.float32, np.float64)
-
-    if isfloat:
-        res = (ycbcr * 255).astype(np.uint8)
-    else:
-        res = ycbcr.copy()
-
+    res = ycbcr.copy()
     for i, line in enumerate(res):
         for j, (y, cr, cb) in enumerate(line):
             res[i, j, 1] = transform_cr(y, cr)
             res[i, j, 2] = transform_cr(y, cb)
-
-    if isfloat:
-        return res.astype(ycbcr.dtype)
     return res
