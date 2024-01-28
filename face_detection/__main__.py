@@ -1,3 +1,4 @@
+import argparse
 from skimage import color
 import numpy as np
 import cv2 as cv
@@ -10,12 +11,16 @@ from .detect.eye_mouth import detect as detect_face
 from .detect import eye_mouth
 from . import utils
 
+p = argparse.ArgumentParser()
+p.add_argument('--example', action='store_true')
+args = p.parse_args()
+
 def cvstream(*observe: str):
-    for winname in observe:
-        cv.namedWindow(winname)
     camera = cv.VideoCapture(0)
     camera.set(cv.CAP_PROP_AUTO_EXPOSURE, 0)
     camera.set(cv.CAP_PROP_AUTO_WB, 0)
+    for winname in observe:
+        cv.namedWindow(winname)
     for raw in utils.stream(camera):
         if any(map(utils.is_window_closed, observe)) or cv.waitKey(1) == utils.Q:
             break
@@ -26,9 +31,13 @@ def imshow_rgb(name: str, rgb: np.ndarray):
     cv.imshow(name, cv.cvtColor(rgb, cv.COLOR_RGB2BGR))
 
 
-# if 1:
-    # bgr = cv.imread('visualization/face.png')
-for bgr in cvstream('compensated_rgb'):
+def example_stream():
+    yield cv.imread('visualization/face.png')
+    cv.waitKey()
+
+image_stream = example_stream() if args.example else cvstream('compensated_rgb', 'skin_mask', 'eye_mouth_blobs', 'skin_rect', 'face_detection')
+
+for bgr in image_stream:
     rgb = cv.cvtColor(bgr, cv.COLOR_BGR2RGB)
     compensated_rgb = compensate_light(rgb)
 
@@ -66,5 +75,4 @@ for bgr in cvstream('compensated_rgb'):
 
     if faces:
         print(faces)
-    # cv.waitKey()
 
